@@ -315,44 +315,7 @@
       50%      { opacity: 0.5; width: 96px; }
     }
 
-    /* --- Custom cursor with chromatic aberration --- */
-    body {
-      cursor: none;
-    }
-
-    a, button, [role="button"] {
-      cursor: pointer;
-    }
-
-    .cursor-main,
-    .cursor-red,
-    .cursor-cyan {
-      position: fixed;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 100;
-      transform: translate(-50%, -50%);
-      transition: opacity 0.15s;
-    }
-
-    .cursor-main {
-      border: 1.5px solid rgba(229, 226, 225, 0.8);
-      z-index: 102;
-    }
-
-    .cursor-red {
-      border: 1.5px solid rgba(255, 171, 243, 0.5);
-      z-index: 101;
-    }
-
-    .cursor-cyan {
-      border: 1.5px solid rgba(0, 221, 221, 0.5);
-      z-index: 101;
-    }
-
-    /* --- Mouse brightness glow (CRT phosphor) --- */
+/* --- Mouse brightness glow (CRT phosphor) --- */
     .mouse-glow {
       position: fixed;
       width: 400px;
@@ -363,8 +326,8 @@
       transform: translate(-50%, -50%);
       background: radial-gradient(
         circle,
-        rgba(200, 210, 220, 0.06) 0%,
-        rgba(200, 210, 220, 0.02) 40%,
+        rgba(200, 210, 220, 0.03) 0%,
+        rgba(200, 210, 220, 0.01) 40%,
         transparent 70%
       );
       opacity: 0;
@@ -439,7 +402,7 @@
               <path d="M2 18V16H5V11.9C3.567 11.667 2.375 11 1.425 9.9C0.475 8.8 0 7.5 0 6V0H12V6C12 7.5 11.525 8.8 10.575 9.9C9.625 11 8.433 11.667 7 11.9V16H10V18H2ZM6 10C6.933 10 7.75 9.717 8.45 9.15C9.15 8.583 9.617 7.867 9.85 7H2.15C2.383 7.867 2.85 8.583 3.55 9.15C4.25 9.717 5.067 10 6 10ZM2 5H10V2H2V5Z"/>
             </svg>
           </span>
-          <span class="nav-label">Ken's Wine</span>
+          <span class="nav-label">Wine</span>
         </a>
         <a href="https://chat.kenbowden.com" target="_blank" rel="noopener" class="nav-link">
           <span class="nav-icon">
@@ -463,10 +426,6 @@
     <div class="reflective-line"></div>
   </div>
 
-  <!-- Custom cursor layers -->
-  <div class="cursor-red"></div>
-  <div class="cursor-cyan"></div>
-  <div class="cursor-main"></div>
   <div class="mouse-glow"></div>
 
   <footer class="footer">
@@ -474,53 +433,15 @@
   </footer>
 
   <script>
-    const cursorMain = document.querySelector('.cursor-main');
-    const cursorRed = document.querySelector('.cursor-red');
-    const cursorCyan = document.querySelector('.cursor-cyan');
     const mouseGlow = document.querySelector('.mouse-glow');
 
-    let mx = -100, my = -100;
-    let redX = mx, redY = my;
-    let cyanX = mx, cyanY = my;
-    let overLink = false;
-
     document.addEventListener('mousemove', (e) => {
-      mx = e.clientX;
-      my = e.clientY;
-
-      cursorMain.style.left = mx + 'px';
-      cursorMain.style.top = my + 'px';
-
-      if (!overLink) {
-        cursorMain.style.opacity = '1';
-        cursorRed.style.opacity = '1';
-        cursorCyan.style.opacity = '1';
-      }
-
-      mouseGlow.style.left = mx + 'px';
-      mouseGlow.style.top = my + 'px';
+      mouseGlow.style.left = e.clientX + 'px';
+      mouseGlow.style.top = e.clientY + 'px';
       mouseGlow.style.opacity = '1';
     });
 
-    document.querySelectorAll('a, button, [role="button"]').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        overLink = true;
-        cursorMain.style.opacity = '0';
-        cursorRed.style.opacity = '0';
-        cursorCyan.style.opacity = '0';
-      });
-      el.addEventListener('mouseleave', () => {
-        overLink = false;
-        cursorMain.style.opacity = '1';
-        cursorRed.style.opacity = '1';
-        cursorCyan.style.opacity = '1';
-      });
-    });
-
     document.addEventListener('mouseleave', () => {
-      cursorMain.style.opacity = '0';
-      cursorRed.style.opacity = '0';
-      cursorCyan.style.opacity = '0';
       mouseGlow.style.opacity = '0';
     });
 
@@ -539,27 +460,6 @@
       pink.addEventListener('animationend', () => pink.remove());
       cyan.addEventListener('animationend', () => cyan.remove());
     });
-
-    // Animate the chromatic offset cursors with slight lag and shifting offset
-    function animateCursors() {
-      const t = Date.now() * 0.001;
-      const offsetX = 1 + Math.sin(t * 1.1) * 0.8;
-      const offsetY = Math.cos(t * 0.9) * 0.4;
-
-      // Lag the aberration layers slightly behind
-      redX += (mx - redX) * 0.65;
-      redY += (my - redY) * 0.65;
-      cyanX += (mx - cyanX) * 0.65;
-      cyanY += (my - cyanY) * 0.65;
-
-      cursorRed.style.left = (redX + offsetX) + 'px';
-      cursorRed.style.top = (redY + offsetY) + 'px';
-      cursorCyan.style.left = (cyanX - offsetX) + 'px';
-      cursorCyan.style.top = (cyanY - offsetY) + 'px';
-
-      requestAnimationFrame(animateCursors);
-    }
-    animateCursors();
   </script>
 
 </body>
